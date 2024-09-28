@@ -46,7 +46,7 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: AWS_CREDENTIALS]]) {
                     script {
                         sh """
-                        aws eks update-kubeconfig --name my-cluster --region ap-south-1 --kubeconfig /tmp/config
+                        aws eks update-kubeconfig --name my-cluster --region eu-north-1 --kubeconfig /tmp/config
                         kubectl apply -f Deployment.yaml --kubeconfig=/tmp/config
                         kubectl set image deployment/backend-a backend-a=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
                         kubectl set image deployment/backend-b backend-b=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
