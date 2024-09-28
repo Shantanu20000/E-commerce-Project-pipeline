@@ -11,17 +11,17 @@ pipeline {
         }
         stage('Build Docker Server-A Image') {
             steps {
-                sh 'docker build -t ${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} ./Backend-servers/A/.'
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} ./Backend-Servers/A/.'
             }
         }
         stage('Build Docker Server-B Image') {
             steps {
-                sh 'docker build -t ${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} ./Backend-servers/B/.'
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} ./Backend-Servers/B/.'
             }
         }
         stage('Build Docker Server-C Image') {
             steps {
-                sh 'docker build -t ${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} ./Backend-servers/C/.'
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} ./Backend-Servers/C/.'
             }
         }
         stage('Push Docker Images') {
