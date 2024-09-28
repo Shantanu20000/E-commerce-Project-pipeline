@@ -1,5 +1,5 @@
 pipeline {
-    any agent
+    agent any
     environment {
         DOCKERHUB_REPO = 'shan20000/e-comm_project'
     }
@@ -14,17 +14,17 @@ pipeline {
                 sh 'docker build -t ${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} ./Backend-servers/A/.'
             }
         }
-        stage('Build Docker Server-A Image') {
+        stage('Build Docker Server-B Image') {
             steps {
                 sh 'docker build -t ${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} ./Backend-servers/B/.'
             }
         }
-        stage('Build Docker Server-A Image') {
+        stage('Build Docker Server-C Image') {
             steps {
                 sh 'docker build -t ${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} ./Backend-servers/C/.'
             }
         }
-        stage('Push Docker Image') {
+        stage('Push Docker Images') {
             environment {
                 registryCredential = 'dockerhub-credentials-id'
             }
@@ -46,16 +46,17 @@ pipeline {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: AWS_CREDENTIALS]]) {
                     script {
                         sh """
-                    aws eks update-kubeconfig --name my-cluster --region ap-south-1 --kubeconfig /tmp/config
-                    kubectl apply -f Deployment.yaml --kubeconfig=/tmp/config 
-                    kubectl set image deployment/backend-a frontend=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
-                    kubectl set image deployment/backend-b frontend=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
-                    kubectl set image deployment/backend-c frontend=${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} --kubeconfig=/tmp/config 
-                    """
+                        aws eks update-kubeconfig --name my-cluster --region ap-south-1 --kubeconfig /tmp/config
+                        kubectl apply -f Deployment.yaml --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-a backend-a=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-b backend-b=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-c backend-c=${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        """
                     }
                 }
             }
         }
     }
 }
+
       
