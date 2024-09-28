@@ -48,9 +48,9 @@ pipeline {
                         sh """
                         aws eks update-kubeconfig --name my-cluster --region eu-north-1 --kubeconfig /tmp/config
                         kubectl apply -f Deployment.yaml --kubeconfig=/tmp/config
-                        kubectl set image deployment/backend-a backend-a=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
-                        kubectl set image deployment/backend-b backend-b=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
-                        kubectl set image deployment/backend-c backend-c=${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-a backend-a-container=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-b backend-b-container=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                        kubectl set image deployment/backend-c backend-c-container=${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} --kubeconfig=/tmp/config
                         """
                     }
                 }
