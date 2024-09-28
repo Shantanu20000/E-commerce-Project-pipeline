@@ -1,0 +1,61 @@
+pipeline {
+    any agent
+    environment {
+        DOCKERHUB_REPO = 'shan20000/e-comm_project'
+    }
+    stages {
+        stage('Pull Source Code') {
+            steps {
+                git 'https://github.com/Shantanu20000/E-commerce-Project-pipeline.git'
+            }
+        }
+        stage('Build Docker Server-A Image') {
+            steps {
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} ./Backend-servers/A/.'
+            }
+        }
+        stage('Build Docker Server-A Image') {
+            steps {
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} ./Backend-servers/B/.'
+            }
+        }
+        stage('Build Docker Server-A Image') {
+            steps {
+                sh 'docker build -t ${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} ./Backend-servers/C/.'
+            }
+        }
+        stage('Push Docker Image') {
+            environment {
+                registryCredential = 'dockerhub-credentials-id'
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+                        sh 'docker push ${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER}'
+                        sh 'docker push ${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER}'
+                        sh 'docker push ${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER}'
+                    }
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            environment {
+                AWS_CREDENTIALS = 'awscred'
+            }
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: AWS_CREDENTIALS]]) {
+                    script {
+                        sh """
+                    aws eks update-kubeconfig --name my-cluster --region ap-south-1 --kubeconfig /tmp/config
+                    kubectl apply -f Deployment.yaml --kubeconfig=/tmp/config 
+                    kubectl set image deployment/backend-a frontend=${DOCKERHUB_REPO}:Server-A-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                    kubectl set image deployment/backend-b frontend=${DOCKERHUB_REPO}:Server-B-${BUILD_NUMBER} --kubeconfig=/tmp/config
+                    kubectl set image deployment/backend-c frontend=${DOCKERHUB_REPO}:Server-C-${BUILD_NUMBER} --kubeconfig=/tmp/config 
+                    """
+                    }
+                }
+            }
+        }
+    }
+}
+      
