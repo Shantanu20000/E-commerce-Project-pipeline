@@ -24,14 +24,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-a
+  name: backend-service-a-1
 spec:
   selector:
     app: app-a
   type: LoadBalancer
   ports:
-  - port: 443
-    targetPort: 443
+  - port: 80
+    targetPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,7 +58,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-b
+  name: backend-service-b-1
 spec:
   selector:
     app: app-b
@@ -94,7 +94,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-c
+  name: backend-service-c-1
 spec:
   selector:
     app: app-c
