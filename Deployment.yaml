@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-a
+  name: backend-service-a-1
 spec:
   selector:
     app: app-a
@@ -58,7 +58,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-b
+  name: backend-service-b-1
 spec:
   selector:
     app: app-b
@@ -92,7 +92,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service-c
+  name: backend-service-c-1
 spec:
   selector:
     app: app-c
